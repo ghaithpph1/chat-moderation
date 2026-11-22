@@ -1,0 +1,13 @@
+# model weights live on the Hugging Face Hub, not in Git (requirement R7)
+models/
+# downloaded data (re-created by: python -m src.data)
+data/*.csv
+# python / tools
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+*.zip
+flagged/
+.gradio/

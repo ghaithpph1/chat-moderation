@@ -1,0 +1,7 @@
+# Everything needed to TRAIN the models (used in the Colab notebook)
+-r requirements.txt
+gensim>=4.3.3
+datasets>=2.18
+onnx>=1.15
+onnxscript>=0.1
+matplotlib>=3.7
