@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/35242517/README.md)
+
 # Real-Time Chat Moderation (SWE015, Use Case 4)
 
 **Author:** Ghaith Azizieh Nweiam · Student ID 2309115497 · SWE015 Introduction to LLMs
