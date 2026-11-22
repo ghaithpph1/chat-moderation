@@ -1,0 +1,59 @@
+=== Lexicon + edit distance (rule) ===
+              precision    recall  f1-score   support
+
+       clean     0.7992    0.9177    0.8544       620
+   offensive     0.6554    0.4042    0.5000       240
+
+    accuracy                         0.7744       860
+   macro avg     0.7273    0.6610    0.6772       860
+weighted avg     0.7590    0.7744    0.7555       860
+
+=== TF-IDF + logistic regression ===
+              precision    recall  f1-score   support
+
+       clean     0.8640    0.8097    0.8360       620
+   offensive     0.5771    0.6708    0.6204       240
+
+    accuracy                         0.7709       860
+   macro avg     0.7205    0.7403    0.7282       860
+weighted avg     0.7839    0.7709    0.7758       860
+
+=== Word2Vec + feed-forward NN ===
+              precision    recall  f1-score   support
+
+       clean     0.8336    0.7113    0.7676       620
+   offensive     0.4592    0.6333    0.5324       240
+
+    accuracy                         0.6895       860
+   macro avg     0.6464    0.6723    0.6500       860
+weighted avg     0.7292    0.6895    0.7020       860
+
+=== BERT-base fine-tuned (FP32) ===
+              precision    recall  f1-score   support
+
+       clean     0.8958    0.8871    0.8914       620
+   offensive     0.7154    0.7333    0.7243       240
+
+    accuracy                         0.8442       860
+   macro avg     0.8056    0.8102    0.8078       860
+weighted avg     0.8454    0.8442    0.8448       860
+
+=== BERT INT8 (ONNX Runtime) ===
+              precision    recall  f1-score   support
+
+       clean     0.8540    0.9435    0.8966       620
+   offensive     0.8000    0.5833    0.6747       240
+
+    accuracy                         0.8430       860
+   macro avg     0.8270    0.7634    0.7856       860
+weighted avg     0.8389    0.8430    0.8346       860
+
+=== BERT INT8 (PyTorch dynamic) ===
+              precision    recall  f1-score   support
+
+       clean     0.8371    0.9613    0.8949       620
+   offensive     0.8378    0.5167    0.6392       240
+
+    accuracy                         0.8372       860
+   macro avg     0.8375    0.7390    0.7670       860
+weighted avg     0.8373    0.8372    0.8235       860

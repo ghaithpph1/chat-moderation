@@ -1,0 +1,24 @@
+# Hand-added insults that are common in game chat but missing from the public
+# LDNOOBW list (which focuses on obscene/sexual words). One word per line.
+# Lines starting with '#' are ignored. Add your own words here.
+idiot
+idiots
+idiotic
+stupid
+moron
+morons
+moronic
+loser
+losers
+dumb
+dumbass
+imbecile
+retard
+retarded
+scum
+scumbag
+pathetic
+worthless
+stfu
+gtfo
+kys

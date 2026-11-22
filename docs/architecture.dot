@@ -1,0 +1,50 @@
+// Architecture of the Real-Time Chat Moderation app (requirement R6).
+// Render:  dot -Tpng -Gdpi=200 docs/architecture.dot -o docs/architecture.png
+digraph G {
+  rankdir=LR; newrank=true; nodesep=0.25; ranksep=0.45;
+  fontname="Helvetica"; fontsize=12; bgcolor="#fcfcfb";
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#9b9a95", fillcolor="#ffffff", penwidth=1];
+  edge [color="#52514e", arrowsize=0.7, fontname="Helvetica", fontsize=9, fontcolor="#52514e"];
+
+  subgraph cluster_runtime {
+    label=<<b>Runtime</b>: app.py on a CPU (laptop or Colab), one message at a time>;
+    labeljust=l; style="rounded"; color="#9b9a95"; fontcolor="#0b0b0b";
+
+    user [label="Player types a\nchat message\n(web browser)", shape=oval, fillcolor="#f0efec"];
+    ui   [label=<<b>Gradio UI</b> (app.py)<br/>chat · model dropdown<br/>compare-all toggle>, fillcolor="#dcebfb"];
+    norm [label=<<b>Normalization</b> (src/normalize.py)<br/>regex: URLs, emoji, hashtags,<br/>leetspeak id10t→idiot, f.u.c.k→fuck,<br/>sooo→soo, accents &amp; Turkish letters>, fillcolor="#fdebd6"];
+    sel  [label="model\nselector\n(src/predictors.py)", shape=diamond, fillcolor="#ffffff", fontsize=9];
+
+    m1 [label=<<b>1 · Lexicon + edit distance</b><br/>src/lexicon.py · rules<br/>bad-word list, Damerau-Levenshtein>, fillcolor="#fdebd6"];
+    m2 [label=<<b>2 · TF-IDF + logistic regression</b><br/>src/tfidf_model.py · sklearn, FP64<br/>word 1-2-grams>, fillcolor="#fdebd6"];
+    m3 [label=<<b>3 · word2vec + feed-forward NN</b><br/>src/w2v_ffn.py · PyTorch FP32<br/>own skip-gram 100-d → mean+max → 128 → 2>, fillcolor="#e1f3ea"];
+    m4 [label=<<b>4 · BERT-base fine-tuned</b><br/>PyTorch FP32 · WordPiece tokenizer<br/>12 attention layers → [CLS] head>, fillcolor="#e9e5fa"];
+    m5 [label=<<b>5 · BERT INT8 (default)</b><br/>ONNX Runtime · dynamic quantization<br/>same tokenizer, INT8 weights>, fillcolor="#fbe0e0", penwidth=2.2, color="#e34948"];
+
+    post [label=<<b>Post-processing</b> (app.py)<br/>softmax → label + confidence<br/>mask message if offensive<br/>timer vs 50 ms budget>, fillcolor="#dcebfb"];
+    out  [label=<<b>Gradio UI output</b><br/>chat with labels / masks<br/>response-time log<br/>all-models comparison>, fillcolor="#dcebfb"];
+
+    {rank=same; m1; m2; m3; m4; m5;}
+    m5 -> m4 -> m3 -> m2 -> m1 [style=invis];
+
+    user -> ui -> norm -> sel;
+    sel -> m1; sel -> m2; sel -> m3; sel -> m4; sel -> m5 [penwidth=2, color="#e34948"];
+    m1 -> post; m2 -> post; m3 -> post; m4 -> post; m5 -> post [penwidth=2, color="#e34948"];
+    post -> out;
+  }
+
+  subgraph cluster_train {
+    label=<<b>Offline training</b>: notebooks/train_on_colab.ipynb (Google Colab, T4 GPU) · run_pipeline.py>;
+    labeljust=l; style="rounded,dashed"; color="#9b9a95"; fontcolor="#0b0b0b";
+    node [fillcolor="#f6f6f4", fontsize=9];
+    data  [label="src/data.py\nOLID / TweetEval tweets\ntrain 11,916 · val 1,324 · test 860"];
+    train [label="src/lexicon.py · src/tfidf_model.py\nsrc/w2v_ffn.py · src/bert_model.py"];
+    quant [label="src/quantize.py\nFP32 → ONNX → INT8"];
+    evalb [label="src/evaluate.py\nsame test set · macro-F1\nsize (MB) · latency (ms)"];
+    hub   [label="Hugging Face Hub\n(trained weights, not in Git)\napp.py downloads them at start", shape=cylinder, fillcolor="#f0efec"];
+    data -> train -> quant -> evalb;
+    quant -> hub [label="scripts/upload_models.py"];
+  }
+
+  hub -> sel [style=dashed, constraint=false];
+}
