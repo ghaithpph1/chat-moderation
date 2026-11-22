@@ -133,7 +133,7 @@ Model weights are **not** in this repository. They are on the Hugging Face Hub (
 
 ## AI usage (R8)
 
-AI assistants were used as allowed by Section 6 of the homework ("for writing code, debugging and drafting slides"). The same statement is on slide 11.
+
 
 | Tool | What it was used for |
 |---|---|
